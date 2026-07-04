@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yerevan Pulpulak Status 💧🇦🇲</title>
     
+    <!-- Шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
 
+    <!-- Библиотека для генерации QR-кода -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
@@ -252,7 +254,7 @@
             font-weight: 600; 
         }
 
-        /* Блок управления пагинацией (кнопки теперь в колонку) */
+        /* Блок управления пагинацией */
         .pagination-container {
             width: 100%;
             max-width: 480px;
@@ -263,7 +265,7 @@
             margin-top: 25px;
         }
 
-        .load-more-btn, .show-all-btn {
+        .load-more-btn, .show-all-btn, .collapse-btn {
             width: 100%; 
             background: white;
             color: var(--main-dark);
@@ -283,7 +285,12 @@
             background: var(--accent-light-blue);
         }
 
-        .load-more-btn:active, .show-all-btn:active {
+        .collapse-btn {
+            background: #EDF2F7;
+            display: none; /* Появляется через JS когда нужно свернуться */
+        }
+
+        .load-more-btn:active, .show-all-btn:active, .collapse-btn:active {
             transform: translate(2px, 2px);
             box-shadow: 2px 2px 0px var(--main-dark);
         }
@@ -417,7 +424,6 @@
             border-radius: 12px;
             cursor: pointer;
             transition: transform 0.2s;
-            /* УБИРАЕМ СИНЕЕ ВЫДЕЛЕНИЕ ПРИ КЛИКЕ И НАЖАТИИ */
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -443,6 +449,7 @@
 <body>
 
     <div class="top-bar">
+        <!-- Блок счётчика -->
         <div class="counter-box" id="pulpulak-counter"></div>
         
         <div class="lang-switcher">
@@ -459,6 +466,7 @@
 
     <div class="search-wrapper">
         <input type="text" id="search" placeholder="Поиск по улице или ориентиру...">
+        <!-- Кнопка очистки внутри инпута -->
         <button class="clear-search-btn" id="clear-search" onclick="clearSearchField()">×</button>
     </div>
 
@@ -466,11 +474,14 @@
         <div id="pulpulaks-list"></div>
     </div>
 
+    <!-- Контейнер для кнопок управления списком -->
     <div class="pagination-container" id="pagination-box">
         <button class="load-more-btn" id="load-more-btn" onclick="loadMoreCards()">Показать ещё ➔</button>
         <button class="show-all-btn" id="show-all-btn" onclick="showAllCards()">Показать все ✨</button>
+        <button class="collapse-btn" id="collapse-btn" onclick="collapseCards()">Свернуть обратно ⬆️</button>
     </div>
 
+    <!-- Форма отправки сообщений -->
     <div class="form-box" id="form-section">
         <h2 id="form-title">Заметили пулпулак?</h2>
         <p id="form-desc">Вода не течет или нашли новый фонтанчик? Напишите Вашему автору, и я обновлю статус на сайте.</p>
@@ -487,13 +498,15 @@
             </div>
             <div class="form-group">
                 <select name="Water Status" id="input-status" required>
-                    </select>
+                    <!-- Опции генерируются динамически через JS -->
+                </select>
             </div>
             <button type="submit" class="submit-btn" id="submit-btn">Отправить статус автору</button>
         </form>
         <div id="form-success" style="display: none; color: #2F855A; font-weight: bold; text-align: center; margin-top: 15px; font-size: 14px;"></div>
     </div>
 
+    <!-- Блок QR-кода -->
     <div class="qr-box">
         <h2 id="qr-title">Поделиться проектом</h2>
         <p id="qr-desc">Нажмите на QR-код, чтобы скачать его, или скопируйте ссылку кнопкой ниже.</p>
@@ -514,6 +527,7 @@
         const paginationBox = document.getElementById('pagination-box');
         const loadMoreBtn = document.getElementById('load-more-btn');
         const showAllBtn = document.getElementById('show-all-btn');
+        const collapseBtn = document.getElementById('collapse-btn');
         const counterBox = document.getElementById('pulpulak-counter');
 
         const translations = {
@@ -537,6 +551,7 @@
                 copiedBtn: "Ссылка скопирована! ✅",
                 loadMoreBtn: "Показать ещё ➔",
                 showAllBtn: "Показать все ✨",
+                collapseBtn: "Свернуть обратно ⬆️",
                 counterText: "Всего",
                 footer: "Проект создал и обновляет 14-летний начинающий разработчик из Еревана. Нажмите кнопку на карточке, чтобы мгновенно оспорить неверный статус! 🍦 \n\nКонфиденциальность: сайт не собирает личные данные пользователей. Отправляя код, Вы не передаете личную информацию.",
                 noResults: "Фонтанчиков по Вашему запросу не найдено 🔍",
@@ -569,6 +584,7 @@
                 copiedBtn: "Link copied! ✅",
                 loadMoreBtn: "Load more ➔",
                 showAllBtn: "Show all ✨",
+                collapseBtn: "Collapse list ⬆️",
                 counterText: "Total",
                 footer: "This project is built and maintained by a 14-year-old aspiring developer in Yerevan. Click the button on any card to instantly report an incorrect status! 🍦 \n\nPrivacy: this site does not collect personal user data. By submitting code, You do not share personal information.",
                 noResults: "No fountains found for Your request 🔍",
@@ -601,6 +617,7 @@
                 copiedBtn: "Հղումը պատճենված է հաջողությամբ! ✅",
                 loadMoreBtn: "Տեսնել ավելին ➔",
                 showAllBtn: "Տեսնել բոլորը ✨",
+                collapseBtn: "Ծալել ետ ⬆️",
                 counterText: "Ընդամենը",
                 footer: "Նախագիծը ստեղծել և թարմացնում է Երևանում բնակվող 14-ամյա սկսնակ ծրագրավորողը։ Սեղմեք քարտի վրայի կոճակը՝ սխալ կարգավիճակը անմիջապես վիճարկելու համար: 🍦 \n\nԳաղտնիություն. կայքը չի հավաքում օգտատերերի անձնական տվյալները: Կոդ ուղարկելով, Դուք չեք փոխանցում անձնական տեղեկություններ:",
                 noResults: "Ձեր հարցմամբ պուլպուլակ չի գտնվել 🔍",
@@ -619,7 +636,7 @@
             { id: 1, locationRu: "Улица Казара Парпеци, 9Б", locationEn: "9B Ghazar Parpetsi St", locationAm: "Ղազար Փարպեցի փողոց, 9Բ", landmarkRu: "Питьевой фонтанчик на тротуаре", landmarkEn: "Drinking fountain on the sidewalk", landmarkAm: "Պուլպուլակ մայթին", status: "good", date: "2026-07-04" },
             { id: 2, locationRu: "Сквер хачкаров", locationEn: "Khachkar Park", locationAm: "Խաչքարերի պուրակ", landmarkRu: "Рядом с площадью Республики / метро", landmarkEn: "Near Republic Square / metro station", landmarkAm: "Հանրապետության հրապարակի / մետրոյի մոտ", status: "weak", date: "2026-07-04" },
             { id: 3, locationRu: "Улица Туманяна, 11/4", locationEn: "11/4 Tumanyan St", locationAm: "Թումանյան փողոց, 11/4", landmarkRu: "Недалеко от перекрестка с ул. Абовяна", landmarkEn: "Near the intersection with Abovyan St", landmarkAm: "Աբովյան փողոցի խաչմերուկի մոտ", status: "good", date: "2026-07-03" },
-            { id: 4, locationRu: "Улица Давид Бека, 1/4", locationEn: "1/4 David Bek St", locationAm: "Դավիթ Բեկի փողոց, 1/4", landmarkRu: "Вдоль проезжей части", landmarkEn: "Along the roadside", landmarkAm: "Ճանապարհի եզрին", status: "broken", date: "2026-06-30" },
+            { id: 4, locationRu: "Улица Давид Бека, 1/4", locationEn: "1/4 David Bek St", locationAm: "Դավիթ Բեկի փողոց, 1/4", landmarkRu: "Вдоль проезжей части", landmarkEn: "Along the roadside", landmarkAm: "Ճանապարհի եզրին", status: "broken", date: "2026-06-30" },
             { id: 5, locationRu: "Проспект Тигран Мец, 74", locationEn: "74 Tigran Mets Ave", locationAm: "Տիգրան Մեծի պողոտա, 74", landmarkRu: "Возле зданий по проспекту", landmarkEn: "Near the avenue buildings", landmarkAm: "Պողոտայի շենքերի մոտ", status: "weak", date: "2026-07-02" }
         ];
 
@@ -688,10 +705,22 @@
             updateUI();
         }
 
+        // Функция сворачивания списка с плавным скроллом наверх списка
+        function collapseCards() {
+            // Плавно скроллим к началу списка или поисковой строке
+            document.querySelector('.search-wrapper').scrollIntoView({ behavior: 'smooth' });
+            
+            // Ждем завершения скролла и обрезаем карточки до 3
+            setTimeout(() => {
+                visibleCardsCount = 3;
+                updateUI();
+            }, 300);
+        }
+
         function clearSearchField() {
             searchInput.value = '';
-            visibleCardsCount = 3; // Сбрасываем пагинацию к дефолту
-            clearSearchBtn.style.display = 'none'; // Скрываем крестик
+            visibleCardsCount = 3; 
+            clearSearchBtn.style.display = 'none'; 
             searchInput.focus();
             updateUI();
         }
@@ -700,7 +729,6 @@
             const filteredData = getFilteredPulpulaks();
             const isSearching = searchInput && searchInput.value.toLowerCase().trim() !== '';
             
-            // Показываем или скрываем крестик очистки в зависимости от текста
             if (clearSearchBtn) {
                 clearSearchBtn.style.display = isSearching ? 'flex' : 'none';
             }
@@ -738,10 +766,22 @@
                     listContainer.appendChild(card);
                 });
 
-                if (isSearching || renderLimit >= filteredData.length) {
+                // Логика управления кнопками пагинации
+                if (isSearching) {
                     paginationBox.style.display = 'none';
                 } else {
                     paginationBox.style.display = 'flex';
+                    if (renderLimit >= filteredData.length) {
+                        // Если показаны все элементы — прячем "Показать еще" и "Все", но выводим "Свернуть"
+                        loadMoreBtn.style.display = 'none';
+                        showAllBtn.style.display = 'none';
+                        collapseBtn.style.display = 'block';
+                    } else {
+                        // Иначе выводим стандартные кнопки пагинации
+                        loadMoreBtn.style.display = 'block';
+                        showAllBtn.style.display = 'block';
+                        collapseBtn.style.display = 'none';
+                    }
                 }
             }
         }
@@ -767,6 +807,7 @@
             document.getElementById('copy-btn').innerText = translations[lang].copyBtn;
             loadMoreBtn.innerText = translations[lang].loadMoreBtn;
             showAllBtn.innerText = translations[lang].showAllBtn;
+            collapseBtn.innerText = translations[lang].collapseBtn;
 
             updateStatusSelect();
             updateUI();
@@ -803,7 +844,6 @@
             });
         }
 
-        // БЕЗОПАСНОЕ СКАЧИВАНИЕ QR ЧЕРЕЗ BLOB (РАБОТАЕТ НА ВСЕХ УСТРОЙСТВАХ)
         function downloadQR() {
             const canvas = document.querySelector('#qrcode canvas');
             if (!canvas) return;
@@ -816,7 +856,7 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                URL.revokeObjectURL(url); // освобождаем память
+                URL.revokeObjectURL(url);
             }, 'image/png');
         }
 
