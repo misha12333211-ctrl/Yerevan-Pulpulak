@@ -23,7 +23,7 @@
             --status-weak: #E65F2B; 
             --status-broken: #D62828; 
             --card-shadow: 6px 6px 0px #1E1E24;
-            --qr-bg: #FFF3CD; /* Желтовато-песочный цвет для выделения блока QR */
+            --qr-bg: #FFF3CD; 
         }
 
         * { 
@@ -44,14 +44,13 @@
         
         .top-bar {
             display: flex;
-            justify-content: space-between; /* Распределяет элементы по краям */
+            justify-content: space-between; 
             align-items: center;
             max-width: 480px;
             width: 100%;
             margin-bottom: 20px;
         }
 
-        /* Стильный счётчик */
         .counter-box {
             font-family: 'Unbounded', sans-serif;
             font-size: 11px;
@@ -117,13 +116,13 @@
             width: 100%; 
             max-width: 480px; 
             margin-bottom: 25px; 
-            position: relative; /* Чтобы спозиционировать крестик очистки внутри */
+            position: relative; 
         }
 
         #search { 
             width: 100%; 
             padding: 18px; 
-            padding-right: 50px; /* Оставляем место для кнопки сброса */
+            padding-right: 50px; 
             border: 3px solid var(--main-dark); 
             border-radius: 16px; 
             font-size: 16px; 
@@ -139,7 +138,6 @@
             box-shadow: 6px 6px 0px var(--accent-blue); 
         }
 
-        /* Кнопка очистки поиска */
         .clear-search-btn {
             position: absolute;
             right: 16px;
@@ -153,7 +151,7 @@
             border-radius: 50%;
             font-size: 16px;
             font-weight: bold;
-            display: none; /* Появляется только через JS */
+            display: none; 
             align-items: center;
             justify-content: center;
             cursor: pointer;
@@ -162,10 +160,6 @@
 
         .clear-search-btn:hover {
             background: #E2E8F0;
-        }
-
-        .clear-search-btn:active {
-            background: #CBD5E0;
         }
 
         .content-area {
@@ -254,7 +248,6 @@
             font-weight: 600; 
         }
 
-        /* Блок управления пагинацией */
         .pagination-container {
             width: 100%;
             max-width: 480px;
@@ -287,7 +280,7 @@
 
         .collapse-btn {
             background: #EDF2F7;
-            display: none; /* Появляется через JS когда нужно свернуться */
+            display: none; 
         }
 
         .load-more-btn:active, .show-all-btn:active, .collapse-btn:active {
@@ -337,7 +330,6 @@
             transition: border-color 0.2s, background-color 0.2s;
         }
 
-        /* Стили для фокуса и ошибок */
         .form-group input:focus {
             border-color: var(--accent-blue);
         }
@@ -345,6 +337,26 @@
         .input-error {
             border-color: var(--status-broken) !important;
             background-color: #FFF5F5 !important;
+        }
+
+        /* Стильный блок встроенной ошибки */
+        .form-error-msg {
+            color: #C53030;
+            background: #FFF5F5;
+            border: 2px solid var(--status-broken);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 15px;
+            box-shadow: 2px 2px 0px var(--main-dark);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .highlight-input {
@@ -357,7 +369,6 @@
             100% { background-color: white; }
         }
 
-        /* Эффект тряски при ошибке ввода */
         .shake-error {
             animation: shake 0.4s ease-in-out;
         }
@@ -449,7 +460,6 @@
 <body>
 
     <div class="top-bar">
-        <!-- Блок счётчика -->
         <div class="counter-box" id="pulpulak-counter"></div>
         
         <div class="lang-switcher">
@@ -466,7 +476,6 @@
 
     <div class="search-wrapper">
         <input type="text" id="search" placeholder="Поиск по улице или ориентиру...">
-        <!-- Кнопка очистки внутри инпута -->
         <button class="clear-search-btn" id="clear-search" onclick="clearSearchField()">×</button>
     </div>
 
@@ -474,7 +483,6 @@
         <div id="pulpulaks-list"></div>
     </div>
 
-    <!-- Контейнер для кнопок управления списком -->
     <div class="pagination-container" id="pagination-box">
         <button class="load-more-btn" id="load-more-btn" onclick="loadMoreCards()">Показать ещё ➔</button>
         <button class="show-all-btn" id="show-all-btn" onclick="showAllCards()">Показать все ✨</button>
@@ -498,10 +506,12 @@
             </div>
             <div class="form-group">
                 <select name="Water Status" id="input-status" required>
-                    <!-- Опции генерируются динамически через JS -->
                 </select>
             </div>
             <button type="submit" class="submit-btn" id="submit-btn">Отправить статус автору</button>
+            
+            <!-- Сюда будут красиво выводиться ошибки валидации -->
+            <div id="form-error" style="display: none;"></div>
         </form>
         <div id="form-success" style="display: none; color: #2F855A; font-weight: bold; text-align: center; margin-top: 15px; font-size: 14px;"></div>
     </div>
@@ -518,8 +528,8 @@
 
     <script>
         let currentLang = 'ru';
-        let visibleCardsCount = 3; // Сколько карточек отображать изначально
-        const cardsPerPage = 3;    // Сколько карточек добавлять при клике "Показать еще"
+        let visibleCardsCount = 3; 
+        const cardsPerPage = 3;    
 
         const listContainer = document.getElementById('pulpulaks-list');
         const searchInput = document.getElementById('search');
@@ -633,7 +643,7 @@
         };
 
         const pulpulaks = [
-            { id: 1, locationRu: "Улица Казара Парпеци, 9Б", locationEn: "9B Ghazar Parpetsi St", locationAm: "Ղազար Փարպեցի փողոց, 9Բ", landmarkRu: "Питьевой фонтанчик на тротуаре", landmarkEn: "Drinking fountain on the sidewalk", landmarkAm: "Պուլպուլակ մայթին", status: "good", date: "2026-07-04" },
+            { id: 1, locationRu: "Улица Казара Парпеци, 9Б", locationEn: "9B Ghazar Parpetsi St", locationAm: "Ղազար Փարպեցի փողոց, 9Բ", landmarkRu: "Питьевой fontanчик на тротуаре", landmarkEn: "Drinking fountain on the sidewalk", landmarkAm: "Պուլպուլակ մայթին", status: "good", date: "2026-07-04" },
             { id: 2, locationRu: "Сквер хачкаров", locationEn: "Khachkar Park", locationAm: "Խաչքարերի պուրակ", landmarkRu: "Рядом с площадью Республики / метро", landmarkEn: "Near Republic Square / metro station", landmarkAm: "Հանրապետության հրապարակի / մետրոյի մոտ", status: "weak", date: "2026-07-04" },
             { id: 3, locationRu: "Улица Туманяна, 11/4", locationEn: "11/4 Tumanyan St", locationAm: "Թումանյան փողոց, 11/4", landmarkRu: "Недалеко от перекрестка с ул. Абовяна", landmarkEn: "Near the intersection with Abovyan St", landmarkAm: "Աբովյան փողոցի խաչմերուկի մոտ", status: "good", date: "2026-07-03" },
             { id: 4, locationRu: "Улица Давид Бека, 1/4", locationEn: "1/4 David Bek St", locationAm: "Դավիթ Բեկի փողոց, 1/4", landmarkRu: "Вдоль проезжей части", landmarkEn: "Along the roadside", landmarkAm: "Ճանապարհի եզրին", status: "broken", date: "2026-06-30" },
@@ -662,6 +672,7 @@
             const locField = document.getElementById('input-location');
             const landField = document.getElementById('input-landmark');
             const subjectField = document.getElementById('form-subject');
+            const errorContainer = document.getElementById('form-error');
 
             locField.value = item.locationRu;
             landField.value = item.landmarkRu;
@@ -669,6 +680,7 @@
 
             locField.classList.remove('input-error');
             landField.classList.remove('input-error');
+            errorContainer.style.display = 'none';
 
             updateStatusSelect(item.status);
             document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
@@ -705,12 +717,8 @@
             updateUI();
         }
 
-        // Функция сворачивания списка с плавным скроллом наверх списка
         function collapseCards() {
-            // Плавно скроллим к началу списка или поисковой строке
             document.querySelector('.search-wrapper').scrollIntoView({ behavior: 'smooth' });
-            
-            // Ждем завершения скролла и обрезаем карточки до 3
             setTimeout(() => {
                 visibleCardsCount = 3;
                 updateUI();
@@ -766,18 +774,15 @@
                     listContainer.appendChild(card);
                 });
 
-                // Логика управления кнопками пагинации
                 if (isSearching) {
                     paginationBox.style.display = 'none';
                 } else {
                     paginationBox.style.display = 'flex';
                     if (renderLimit >= filteredData.length) {
-                        // Если показаны все элементы — прячем "Показать еще" и "Все", но выводим "Свернуть"
                         loadMoreBtn.style.display = 'none';
                         showAllBtn.style.display = 'none';
                         collapseBtn.style.display = 'block';
                     } else {
-                        // Иначе выводим стандартные кнопки пагинации
                         loadMoreBtn.style.display = 'block';
                         showAllBtn.style.display = 'block';
                         collapseBtn.style.display = 'none';
@@ -808,6 +813,12 @@
             loadMoreBtn.innerText = translations[lang].loadMoreBtn;
             showAllBtn.innerText = translations[lang].showAllBtn;
             collapseBtn.innerText = translations[lang].collapseBtn;
+
+            // Если в блоке ошибки есть сообщение, обновляем его язык налету
+            const errorContainer = document.getElementById('form-error');
+            if (errorContainer.style.display === 'block') {
+                errorContainer.innerText = translations[lang].validationError;
+            }
 
             updateStatusSelect();
             updateUI();
@@ -877,6 +888,7 @@
             const form = document.getElementById('water-form');
             const button = document.getElementById('submit-btn');
             const successMessage = document.getElementById('form-success');
+            const errorContainer = document.getElementById('form-error');
             
             const locInput = document.getElementById('input-location');
             const landInput = document.getElementById('input-landmark');
@@ -888,6 +900,8 @@
 
             locInput.classList.remove('input-error', 'shake-error');
             landInput.classList.remove('input-error', 'shake-error');
+            errorContainer.style.display = 'none';
+            errorContainer.className = '';
 
             if (locValue.length < 4) {
                 locInput.classList.add('input-error', 'shake-error');
@@ -899,8 +913,12 @@
                 hasError = true;
             }
 
+            // ОШИБКА ТЕПЕРЬ ВЫВОДИТСЯ КРАСИВО ВНУТРИ ФОРМЫ (БЕЗ ALERT)
             if (hasError) {
-                alert(translations[currentLang].validationError);
+                errorContainer.innerText = translations[currentLang].validationError;
+                errorContainer.className = 'form-error-msg';
+                errorContainer.style.display = 'block';
+
                 setTimeout(() => {
                     locInput.classList.remove('shake-error');
                     landInput.classList.remove('shake-error');
@@ -934,13 +952,17 @@
                     button.disabled = false;
                     setTimeout(() => successMessage.style.display = 'none', 5000);
                 } else {
-                    alert(translations[currentLang].errorMsg);
+                    errorContainer.innerText = translations[currentLang].errorMsg;
+                    errorContainer.className = 'form-error-msg';
+                    errorContainer.style.display = 'block';
                     button.innerText = translations[currentLang].submitBtn;
                     button.disabled = false;
                 }
             })
             .catch(() => {
-                alert(translations[currentLang].networkError);
+                errorContainer.innerText = translations[currentLang].networkError;
+                errorContainer.className = 'form-error-msg';
+                errorContainer.style.display = 'block';
                 button.innerText = translations[currentLang].submitBtn;
                 button.disabled = false;
             });
