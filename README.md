@@ -1,1 +1,65 @@
 # Yerevan-Pulpulak
+
+# 💧 Yerevan Pulpulak Status
+
+[RU](#ru) | [EN](#en)
+
+---
+
+## RU
+
+Фронтенд-приложение для мониторинга питьевых фонтанчиков (пулпулаков) в Ереване. Сайт помогает жителям и туристам находить работающие источники воды и мгновенно отправлять отчеты, если где-то пропал напор или фонтанчик сломался.
+
+Проект создан и развивается 14-летним начинающим разработчиком из Еревана.
+
+### 🚀 Что умеет проект
+* **Интерактивный статус:** Карточки пулпулаков меняют цвет в зависимости от состояния воды (отлично, слабый напор, не работает).
+* **Умный живой поиск:** Ищет по улицам, ориентирам, датам и даже по ключевым словам статуса на лету.
+* **Полная мультиязычность:** Интерфейс переключается между тремя языками без перезагрузки страницы.
+* **Кастомная валидация:** Никаких уродливых браузерных окон. Ошибки ввода анимированы с эффектом тряски инпутов (shake effect) прямо в форме.
+* **Генерация QR-кода:** Встроенный модуль позволяет пользователей скачивать QR-код сайта прямо на устройство, чтобы делиться проектом.
+* **Система фидбека без бэкенда:** Интеграция с FormSubmit позволяет отправлять отчеты об ошибках и новые адреса автору на почту прямо из HTML/JS.
+
+### 🛠️ Технологии
+* **HTML5** (Семантическая верстка)
+* **CSS3** (Neo-brutalism дизайн, CSS переменные, кастомная анимация)
+* **Vanilla JavaScript** (ES6+, динамический рендеринг, фильтрация, управление состоянием локализации)
+* **QRCode.js** (Клиентская генерация QR-кодов)
+
+---
+
+## EN
+
+A neat frontend application for monitoring drinking fountains (pulpulaks) in Yerevan. The site helps residents and tourists find working water sources and instantly report issues if the water stops running or the fountain breaks down.
+
+Built and maintained by a 14-year-old aspiring developer based in Yerevan.
+
+### 🚀 Core Features
+* **Dynamic Statuses:** Fountain cards change colors based on the current water condition (perfect stream, weak stream, broken).
+* **Smart Live Search:** Instantly filters by streets, landmarks, check dates, or specific statuses.
+* **True Multilingualism:** Seamless on-the-fly switching between three languages.
+* **Sleek Custom Validation:** Zero ugly browser alerts. Input validation errors are handled elegantly with a custom inline layout and visual shake effects.
+* **QR Code Generator:** Built-in module allows users to download the site's QR code as a PNG directly to their device.
+* **Serverless Feedback System:** FormSubmit integration enables zero-backend form processing, routing status corrections straight to the author's email.
+
+### 🛠️ Tech Stack
+* **HTML5** (Semantic markup)
+* **CSS3** (Neo-brutalism styling, CSS variables, custom keyframe animations)
+* **Vanilla JavaScript** (ES6+, dynamic rendering, state management, search filtering)
+* **QRCode.js** (Client-side QR code generation)
+
+---
+
+## 📂 Other Projects / Другие проекты
+
+Check out my profile to see what else I'm working on! / Заглядывайте в мой профиль, чтобы посмотреть другие мои работы:
+👉 [github.com/misha12333211-ctrl](https://github.com/misha12333211-ctrl)
+
+---
+
+## 🍦 Support / Поддержать автора
+
+If you like this project and want to support a 14-year-old developer, you can buy me an ice cream! 
+Если вам понравился проект и вы хотите поддержать начинающего автора, буду рад донату на мороженое! 
+
+* **Crypto (TON):** `UQChH78zshT_xKpx_8x8A6j-9Z_7R_F_Z-8x_8x8x8x8x8x8` *(Сюда можно вставить свой реальный TON-кошелек или другую ссылку на донат)*
