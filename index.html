@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yerevan Pulpulak Status 💧🇦🇲</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #F4F7F6; 
+            --main-dark: #1E1E24;
+            --accent-blue: #2A6F97; 
+            --accent-light-blue: #A9D6E5; 
+            --status-good: #2A6F97; 
+            --status-weak: #E65F2B; 
+            --status-broken: #D62828; 
+            --card-shadow: 6px 6px 0px #1E1E24;
+            --qr-bg: #FFF3CD; /* Желтовато-песочный цвет для выделения блока QR */
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0;
+        }
+
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--main-dark); 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between; /* Распределяет элементы по краям */
+            align-items: center;
+            max-width: 480px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* Стильный счётчик */
+        .counter-box {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            background: #E2EFE0;
+            border: 2px solid var(--main-dark);
+            padding: 6px 12px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 0px var(--main-dark);
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: white;
+            border: 2px solid var(--main-dark);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            box-shadow: 2px 2px 0px var(--main-dark);
+            transition: 0.1s;
+        }
+        
+        .lang-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        header { 
+            text-align: center; 
+            margin: 10px 0 25px 0; 
+            max-width: 500px; 
+        }
+
+        h1 { 
+            font-family: 'Unbounded', sans-serif; 
+            font-size: 26px; 
+            line-height: 1.2; 
+            margin-bottom: 12px; 
+            text-transform: uppercase; 
+        }
+        
+        h1 span { 
+            background: var(--accent-blue); 
+            color: white; 
+            padding: 2px 8px; 
+            display: inline-block; 
+            transform: rotate(-1px); 
+        }
+
+        p.subtitle { 
+            font-size: 14px; 
+            color: #4A5568; 
+            line-height: 1.5; 
+        }
+
+        .search-wrapper { 
+            width: 100%; 
+            max-width: 480px; 
+            margin-bottom: 25px; 
+        }
+
+        #search { 
+            width: 100%; 
+            padding: 18px; 
+            border: 3px solid var(--main-dark); 
+            border-radius: 16px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            outline: none; 
+            background: white; 
+            box-shadow: 4px 4px 0px var(--main-dark); 
+            transition: 0.2s; 
+        }
+        
+        #search:focus { 
+            transform: translate(-2px, -2px); 
+            box-shadow: 6px 6px 0px var(--accent-blue); 
+        }
+
+        .content-area {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        #pulpulaks-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+        }
+
+        .card { 
+            background: white; 
+            padding: 24px; 
+            border-radius: 18px; 
+            border: 3px solid var(--main-dark); 
+            box-shadow: var(--card-shadow); 
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card h3 { 
+            font-family: 'Unbounded', sans-serif; 
+            font-size: 16px; 
+            margin-bottom: 6px; 
+        }
+        
+        .card .landmark { 
+            font-size: 13px; 
+            color: #4A5568; 
+            margin-bottom: 16px; 
+            font-weight: 500; 
+            background: #EDF2F7;
+            padding: 6px 10px;
+            border-radius: 8px;
+            align-self: flex-start;
+        }
+
+        .status-box { 
+            padding: 12px; 
+            border-radius: 12px; 
+            font-size: 14px; 
+            font-family: 'Unbounded', sans-serif; 
+            font-weight: 700; 
+            text-align: center; 
+            border: 2px solid var(--main-dark);
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .status-good { background-color: var(--status-good); }
+        .status-weak { background-color: var(--status-weak); }
+        .status-broken { background-color: var(--status-broken); }
+        
+        .report-btn {
+            background: #FFF5F5;
+            color: #C53030;
+            border: 2px dashed #FC8181;
+            padding: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .report-btn:hover {
+            background: #FED7D7;
+            border-color: #E53E3E;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+        }
+
+        .date { 
+            font-size: 11px; 
+            color: #718096; 
+            font-weight: 600; 
+        }
+
+        /* Блок управления пагинацией (кнопки теперь в колонку) */
+        .pagination-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column; 
+            gap: 14px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .load-more-btn, .show-all-btn {
+            width: 100%; 
+            background: white;
+            color: var(--main-dark);
+            border: 3px solid var(--main-dark);
+            padding: 15px 20px; 
+            border-radius: 16px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--main-dark);
+            transition: 0.1s;
+            text-align: center;
+        }
+
+        .show-all-btn {
+            background: var(--accent-light-blue);
+        }
+
+        .load-more-btn:active, .show-all-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--main-dark);
+        }
+        
+        /* Форма */
+        .form-box { 
+            margin-top: 35px; 
+            background: #E2EFE0; 
+            width: 100%; 
+            max-width: 480px; 
+            padding: 24px; 
+            border-radius: 18px; 
+            border: 3px solid var(--main-dark); 
+            box-shadow: var(--card-shadow); 
+        }
+        
+        .form-box h2 { 
+            font-family: 'Unbounded', sans-serif; 
+            font-size: 16px; 
+            margin-bottom: 8px; 
+        }
+        
+        .form-box p { 
+            font-size: 13px; 
+            color: #2D3748; 
+            margin-bottom: 16px; 
+            line-height: 1.4; 
+        }
+        
+        .form-group { 
+            margin-bottom: 12px; 
+            position: relative;
+        }
+        
+        .form-group input, .form-group select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid var(--main-dark); 
+            border-radius: 10px; 
+            font-size: 14px; 
+            font-family: inherit;
+            outline: none;
+            background: white;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        /* Стили для фокуса и ошибок */
+        .form-group input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .input-error {
+            border-color: var(--status-broken) !important;
+            background-color: #FFF5F5 !important;
+        }
+
+        .highlight-input {
+            animation: pulse-highlight 1.5s ease-in-out;
+            border-color: var(--status-weak) !important;
+        }
+
+        @keyframes pulse-highlight {
+            0% { background-color: #FFFFAF; }
+            100% { background-color: white; }
+        }
+
+        /* Эффект тряски при ошибке ввода */
+        .shake-error {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        
+        .submit-btn, .copy-btn { 
+            width: 100%; 
+            color: white; 
+            border: 2px solid var(--main-dark); 
+            padding: 14px; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            box-shadow: 3px 3px 0px var(--main-dark); 
+            transition: 0.1s; 
+        }
+
+        .submit-btn { background: #48BB78; }
+        .copy-btn { background: var(--accent-blue); margin-top: 16px; }
+        
+        .submit-btn:active, .copy-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--main-dark);
+        }
+
+        /* Блок QR-кода */
+        .qr-box {
+            margin-top: 35px;
+            background: var(--qr-bg);
+            width: 100%;
+            max-width: 480px;
+            padding: 24px;
+            border-radius: 18px;
+            border: 3px solid var(--main-dark);
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .qr-box h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .qr-box p {
+            font-size: 13px;
+            color: #4A5568;
+            margin-bottom: 16px;
+        }
+
+        #qrcode {
+            padding: 10px;
+            background: #fff;
+            border: 2px solid var(--main-dark);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #qrcode:hover {
+            transform: scale(1.03);
+        }
+
+        .footer-box { 
+            margin: 40px 0; 
+            text-align: center; 
+            max-width: 480px; 
+            font-size: 13px; 
+            color: #718096; 
+            font-weight: 500; 
+            line-height: 1.5; 
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="counter-box" id="pulpulak-counter"></div>
+        
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+            <button class="lang-btn" onclick="setLanguage('am')">AM</button>
+        </div>
+    </div>
+
+    <header>
+        <h1 id="main-title">Yerevan <span>Pulpulak</span> 💧</h1>
+        <p class="subtitle" id="main-subtitle">Актуальный статус питьевых фонтанчиков Еревана. Проверено жителями города и туристами.</p>
+    </header>
+
+    <div class="search-wrapper">
+        <input type="text" id="search" placeholder="Поиск по улице или ориентиру...">
+    </div>
+
+    <div class="content-area">
+        <div id="pulpulaks-list"></div>
+    </div>
+
+    <div class="pagination-container" id="pagination-box">
+        <button class="load-more-btn" id="load-more-btn" onclick="loadMoreCards()">Показать ещё ➔</button>
+        <button class="show-all-btn" id="show-all-btn" onclick="showAllCards()">Показать все ✨</button>
+    </div>
+
+    <div class="form-box" id="form-section">
+        <h2 id="form-title">Заметили пулпулак?</h2>
+        <p id="form-desc">Вода не течет или нашли новый фонтанчик? Напишите Вашему автору, и я обновлю статус на сайте.</p>
+        
+        <form action="https://formsubmit.co/stasaleskin80@gmail.com" method="POST" id="water-form" onsubmit="sendFormData(event)">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_subject" id="form-subject" value="New Pulpulak Status Update">
+            
+            <div class="form-group">
+                <input type="text" name="Location" id="input-location" placeholder="Улица / Адрес" required>
+            </div>
+            <div class="form-group">
+                <input type="text" name="Landmark" id="input-landmark" placeholder="Ориентир (например: у входа в метро)" required>
+            </div>
+            <div class="form-group">
+                <select name="Water Status" id="input-status" required>
+                    </select>
+            </div>
+            <button type="submit" class="submit-btn" id="submit-btn">Отправить статус автору</button>
+        </form>
+        <div id="form-success" style="display: none; color: #2F855A; font-weight: bold; text-align: center; margin-top: 15px; font-size: 14px;"></div>
+    </div>
+
+    <div class="qr-box">
+        <h2 id="qr-title">Поделиться проектом</h2>
+        <p id="qr-desc">Нажмите на QR-код, чтобы скачать его, или скопируйте ссылку кнопкой ниже.</p>
+        <div id="qrcode" onclick="downloadQR()" title="Нажмите, чтобы скачать PNG"></div>
+        <button class="copy-btn" id="copy-btn" onclick="copyLink()">Скопировать ссылку</button>
+    </div>
+
+    <div class="footer-box" id="footer-text"></div>
+
+    <script>
+        let currentLang = 'ru';
+        let visibleCardsCount = 3; // Сколько карточек отображать изначально
+        const cardsPerPage = 3;    // Сколько карточек добавлять при клике "Показать еще"
+
+        const listContainer = document.getElementById('pulpulaks-list');
+        const searchInput = document.getElementById('search');
+        const paginationBox = document.getElementById('pagination-box');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const showAllBtn = document.getElementById('show-all-btn');
+        const counterBox = document.getElementById('pulpulak-counter');
+
+        const translations = {
+            ru: {
+                title: "Yerevan <span>Pulpulak</span> 💧",
+                subtitle: "Актуальный статус питьевых фонтанчиков Еревана. Проверено жителями города и туристами.",
+                searchPlaceholder: "Поиск по улице или ориентиру...",
+                formTitle: "Заметили пулпулак?",
+                formDesc: "Вода не течет или нашли новый фонтанчик? Напишите Вашему автору, и я обновлю статус на сайте.",
+                inputLocation: "Улица / Адрес",
+                inputLandmark: "Ориентир (например: у входа в метро)",
+                submitBtn: "Отправить статус автору",
+                sendingBtn: "Отправка...",
+                successMsg: "🎉 Спасибо! Информация успешно отправлена автору.",
+                errorMsg: "Ошибка отправки. Попробуйте еще раз.",
+                networkError: "Ошибка сети. Проверьте интернет.",
+                validationError: "Пожалуйста, укажите более детальный адрес или ориентир (минимум 4 символа)! ⚠️",
+                qrTitle: "Поделиться проектом",
+                qrDesc: "Нажмите на QR-код, чтобы скачать его, или скопируйте ссылку кнопкой ниже.",
+                copyBtn: "Скопировать ссылку",
+                copiedBtn: "Ссылка скопирована! ✅",
+                loadMoreBtn: "Показать ещё ➔",
+                showAllBtn: "Показать все ✨",
+                counterText: "Всего",
+                footer: "Проект создал и обновляет 14-летний начинающий разработчик из Еревана. Нажмите кнопку на карточке, чтобы мгновенно оспорить неверный статус! 🍦 \n\nКонфиденциальность: сайт не собирает личные данные пользователей. Отправляя код, Вы не передаете личную информацию.",
+                noResults: "Фонтанчиков по Вашему запросу не найдено 🔍",
+                today: "Проверено сегодня",
+                yesterday: "Проверено вчера",
+                updatedOn: "Проверено",
+                reportBtn: "Статус неверный? ⚠️",
+                good: "Вода идет отлично ❄️",
+                weak: "Слабый напор 💧",
+                broken: "Не работает ❌",
+                reportSubject: "ОПРОВЕРЖЕНИЕ СТАТУСА: "
+            },
+            en: {
+                title: "Yerevan <span>Pulpulak</span> 💧",
+                subtitle: "Current status of drinking fountains in Yerevan. Verified by city residents and tourists.",
+                searchPlaceholder: "Search by street or landmark...",
+                formTitle: "Spotted a pulpulak?",
+                formDesc: "Water not running or found a new fountain? Let Your author know, and I'll update the status on the site.",
+                inputLocation: "Street / Address",
+                inputLandmark: "Landmark (e.g., near metro entrance)",
+                submitBtn: "Submit status to author",
+                sendingBtn: "Sending...",
+                successMsg: "🎉 Thank you! Information successfully sent to the author.",
+                errorMsg: "Error sending. Please try again.",
+                networkError: "Network error. Please check your connection.",
+                validationError: "Please provide a more detailed address or landmark (minimum 4 characters)! ⚠️",
+                qrTitle: "Share the project",
+                qrDesc: "Click on the QR code to download it, or copy the link using the button below.",
+                copyBtn: "Copy link",
+                copiedBtn: "Link copied! ✅",
+                loadMoreBtn: "Load more ➔",
+                showAllBtn: "Show all ✨",
+                counterText: "Total",
+                footer: "This project is built and maintained by a 14-year-old aspiring developer in Yerevan. Click the button on any card to instantly report an incorrect status! 🍦 \n\nPrivacy: this site does not collect personal user data. By submitting code, You do not share personal information.",
+                noResults: "No fountains found for Your request 🔍",
+                today: "Verified today",
+                yesterday: "Verified yesterday",
+                updatedOn: "Verified on",
+                reportBtn: "Wrong status? ⚠️",
+                good: "Water runs perfectly ❄️",
+                weak: "Weak stream 💧",
+                broken: "Not working ❌",
+                reportSubject: "STATUS REPORT: "
+            },
+            am: {
+                title: "Yerevan <span>Pulpulak</span> 💧",
+                subtitle: "Երևանի պուլպուլակների արդիական կարգավիճակը։ Ստուգված է քաղաքի բնակիչների և զբոսաշրջիկների կողմից։",
+                searchPlaceholder: "Փնտրել ըստ փողոցի կամ կողմնորոշիչի...",
+                formTitle: "Պուլպուլա՞կ եք նկատել:",
+                formDesc: "Ջուրը չի՞ հոսում, թե՞ նոր պուլպուլակ եք գտել: Գրեք Ձեր հեղինակին, և ես կթարմացնեմ կարգավիճակը կայքում:",
+                inputLocation: "Փողոց / Հասցե",
+                inputLandmark: "Կողմնորոշիչ (օրինակ՝ մետրոյի մուտքի մոտ)",
+                submitBtn: "Ուղարկել կարգավիճակը հեղինակին",
+                sendingBtn: "Ուղարկվում է...",
+                successMsg: "🎉 Շնորհակալություն: Տեղեկությունը հաջողությամբ ուղարկվեց հեղինակին:",
+                errorMsg: "Ուղարկման սխալ: Կրկին փորձեք:",
+                networkError: "Ցանցային սխալ: Ստուգեք Ձեր կապը:",
+                validationError: "Խնդրում ենք տրամադրել ավելի մանրամասն հասցե կամ կողմնորոշիչ (նվազագույնը 4 նիշ): ⚠️",
+                qrTitle: "Կիսվել նախագծով",
+                qrDesc: "Սեղմեք QR կոդի վրա՝ այն ներբեռնելու համար, կամ պատճենեք հղումը ստորև բերված կոճակով:",
+                copyBtn: "Պատճենել հղումը",
+                copiedBtn: "Հղումը պատճենված է հաջողությամբ! ✅",
+                loadMoreBtn: "Տեսնել ավելին ➔",
+                showAllBtn: "Տեսնել բոլորը ✨",
+                counterText: "Ընդամենը",
+                footer: "Նախագիծը ստեղծել և թարմացնում է Երևանում բնակվող 14-ամյա սկսնակ ծրագրավորողը։ Սեղմեք քարտի վրայի կոճակը՝ սխալ կարգավիճակը անմիջապես վիճարկելու համար: 🍦 \n\nԳաղտնիություն. կայքը չի հավաքում օգտատերերի անձնական տվյալները: Կոդ ուղարկելով, Դուք չեք փոխանցում անձնական տեղեկություններ:",
+                noResults: "Ձեր հարցմամբ պուլպուլակ չի գտնվել 🔍",
+                today: "Ստուգվել է այսօր",
+                yesterday: "Ստուգվել է երեկ",
+                updatedOn: "Ստուգվել է",
+                reportBtn: "Սխալ կարգավիճա՞կ է ⚠️",
+                good: "Ջուրը հիանալի հոսում է ❄️",
+                weak: "Թույլ ճնշում 💧",
+                broken: "Չի աշխատում ❌",
+                reportSubject: "STATUS REPORT: "
+            }
+        };
+
+        const pulpulaks = [
+            { id: 1, locationRu: "Улица Казара Парпеци, 9Б", locationEn: "9B Ghazar Parpetsi St", locationAm: "Ղազար Փարպեցի փողոց, 9Բ", landmarkRu: "Питьевой фонтанчик на тротуаре", landmarkEn: "Drinking fountain on the sidewalk", landmarkAm: "Պուլպուլակ մայթին", status: "good", date: "2026-07-04" },
+            { id: 2, locationRu: "Сквер хачкаров", locationEn: "Khachkar Park", locationAm: "Խաչքարերի պուրակ", landmarkRu: "Рядом с площадью Республики / метро", landmarkEn: "Near Republic Square / metro station", landmarkAm: "Հանրապետության հրապարակի / մետրոյի մոտ", status: "weak", date: "2026-07-04" },
+            { id: 3, locationRu: "Улица Туманяна, 11/4", locationEn: "11/4 Tumanyan St", locationAm: "Թումանյան փողոց, 11/4", landmarkRu: "Недалеко от перекрестка с ул. Абовяна", landmarkEn: "Near the intersection with Abovyan St", landmarkAm: "Աբովյան փողոցի խաչմերուկի մոտ", status: "good", date: "2026-07-03" },
+            { id: 4, locationRu: "Улица Давид Бека, 1/4", locationEn: "1/4 David Bek St", locationAm: "Դավիթ Բեկի փողոց, 1/4", landmarkRu: "Вдоль проезжей части", landmarkEn: "Along the roadside", landmarkAm: "Ճանապարհի եզրին", status: "broken", date: "2026-06-30" },
+            { id: 5, locationRu: "Проспект Тигран Мец, 74", locationEn: "74 Tigran Mets Ave", locationAm: "Տիգրան Մեծի պողոտա, 74", landmarkRu: "Возле зданий по проспекту", landmarkEn: "Near the avenue buildings", landmarkAm: "Պողոտայի շենքերի մոտ", status: "weak", date: "2026-07-02" }
+        ];
+
+        function updateStatusSelect(excludeStatus = null) {
+            const select = document.getElementById('input-status');
+            select.innerHTML = '';
+            const allStatuses = [
+                { value: 'good', text: translations[currentLang].good },
+                { value: 'weak', text: translations[currentLang].weak },
+                { value: 'broken', text: translations[currentLang].broken }
+            ];
+            allStatuses.filter(s => s.value !== excludeStatus).forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.value; opt.text = s.text;
+                select.appendChild(opt);
+            });
+        }
+
+        function reportStatus(id) {
+            const item = pulpulaks.find(p => p.id === id);
+            if (!item) return;
+
+            const locField = document.getElementById('input-location');
+            const landField = document.getElementById('input-landmark');
+            const subjectField = document.getElementById('form-subject');
+
+            locField.value = item.locationRu;
+            landField.value = item.landmarkRu;
+            subjectField.value = translations[currentLang].reportSubject + item.locationEn;
+
+            // Убираем ошибки валидации, если они были подсвечены до этого
+            locField.classList.remove('input-error');
+            landField.classList.remove('input-error');
+
+            updateStatusSelect(item.status);
+            document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+
+            locField.classList.add('highlight-input');
+            landField.classList.add('highlight-input');
+            setTimeout(() => {
+                locField.classList.remove('highlight-input');
+                landField.classList.remove('highlight-input');
+            }, 1500);
+        }
+
+        function getRelativeDateString(dateStr, lang) {
+            const updateDate = new Date(dateStr);
+            const today = new Date();
+            updateDate.setHours(0,0,0,0); today.setHours(0,0,0,0);
+            const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+
+            if (updateDate.getTime() === today.getTime()) return translations[lang].today;
+            if (updateDate.getTime() === yesterday.getTime()) return translations[lang].yesterday;
+            
+            const day = String(updateDate.getDate()).padStart(2, '0');
+            const month = String(updateDate.getMonth() + 1).padStart(2, '0');
+            return `${translations[lang].updatedOn}: ${day}.${month}.${updateDate.getFullYear()}`;
+        }
+
+        function loadMoreCards() {
+            visibleCardsCount += cardsPerPage;
+            updateUI();
+        }
+
+        function showAllCards() {
+            visibleCardsCount = pulpulaks.length;
+            updateUI();
+        }
+
+        function updateUI() {
+            const filteredData = getFilteredPulpulaks();
+            const isSearching = searchInput && searchInput.value.toLowerCase().trim() !== '';
+            
+            // Обновляем счетчик
+            if (counterBox) {
+                counterBox.innerText = `${translations[currentLang].counterText}: ${pulpulaks.length}`;
+            }
+
+            if (listContainer) {
+                listContainer.innerHTML = '';
+                if (filteredData.length === 0) {
+                    listContainer.innerHTML = `<p style="text-align:center; color:#666; font-weight:600; margin-top:20px;">${translations[currentLang].noResults}</p>`;
+                    paginationBox.style.display = 'none';
+                    return;
+                }
+
+                const renderLimit = isSearching ? filteredData.length : visibleCardsCount;
+                const dataToRender = filteredData.slice(0, renderLimit);
+
+                dataToRender.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+
+                    let loc = p.locationRu; let land = p.landmarkRu;
+                    if (currentLang === 'en') { loc = p.locationEn; land = p.landmarkEn; }
+                    if (currentLang === 'am') { loc = p.locationAm; land = p.landmarkAm; }
+
+                    card.innerHTML = `
+                        <h3>📍 ${loc}</h3>
+                        <div class="landmark">${land}</div>
+                        <div class="status-box status-${p.status}">${translations[currentLang][p.status]}</div>
+                        <button class="report-btn" onclick="reportStatus(${p.id})">${translations[currentLang].reportBtn}</button>
+                        <div class="card-footer"><div class="date">⏳ ${getRelativeDateString(p.date, currentLang)}</div></div>
+                    `;
+                    listContainer.appendChild(card);
+                });
+
+                if (isSearching || renderLimit >= filteredData.length) {
+                    paginationBox.style.display = 'none';
+                } else {
+                    paginationBox.style.display = 'flex';
+                }
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase() === lang) btn.classList.add('active');
+            });
+
+            document.getElementById('main-title').innerHTML = translations[lang].title;
+            document.getElementById('main-subtitle').innerText = translations[lang].subtitle;
+            if (searchInput) searchInput.placeholder = translations[lang].searchPlaceholder;
+            document.getElementById('form-title').innerText = translations[lang].formTitle;
+            document.getElementById('form-desc').innerText = translations[lang].formDesc;
+            document.getElementById('input-location').placeholder = translations[lang].inputLocation;
+            document.getElementById('input-landmark').placeholder = translations[lang].inputLandmark;
+            document.getElementById('submit-btn').innerText = translations[lang].submitBtn;
+            document.getElementById('footer-text').innerText = translations[lang].footer;
+            document.getElementById('qr-title').innerText = translations[lang].qrTitle;
+            document.getElementById('qr-desc').innerText = translations[lang].qrDesc;
+            document.getElementById('copy-btn').innerText = translations[lang].copyBtn;
+            loadMoreBtn.innerText = translations[lang].loadMoreBtn;
+            showAllBtn.innerText = translations[lang].showAllBtn;
+
+            updateStatusSelect();
+            updateUI();
+        }
+
+        function getFilteredPulpulaks() {
+            const text = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            return pulpulaks.filter(p => {
+                const dateText = getRelativeDateString(p.date, currentLang).toLowerCase();
+                const statusText = translations[currentLang][p.status].toLowerCase();
+                return p.locationRu.toLowerCase().includes(text) ||
+                       p.locationEn.toLowerCase().includes(text) ||
+                       p.locationAm.toLowerCase().includes(text) ||
+                       p.landmarkRu.toLowerCase().includes(text) ||
+                       p.landmarkEn.toLowerCase().includes(text) ||
+                       p.landmarkAm.toLowerCase().includes(text) ||
+                       statusText.includes(text) || dateText.includes(text);
+            });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                if (searchInput.value.trim() === '') visibleCardsCount = 3;
+                updateUI();
+            });
+        }
+
+        function generateQRCode() {
+            new QRCode(document.getElementById("qrcode"), {
+                text: window.location.href,
+                width: 140, height: 140,
+                colorDark : "#1E1E24", colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        function downloadQR() {
+            const img = document.querySelector('#qrcode img');
+            const canvas = document.querySelector('#qrcode canvas');
+            const link = document.createElement('a');
+            link.download = 'yerevan-pulpulak-qr.png';
+            
+            if (img) { link.href = img.src; link.click(); }
+            else if (canvas) { link.href = canvas.toDataURL("image/png"); link.click(); }
+        }
+
+        function copyLink() {
+            const btn = document.getElementById('copy-btn');
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                btn.innerText = translations[currentLang].copiedBtn;
+                btn.style.background = "#48BB78"; 
+                setTimeout(() => {
+                    btn.innerText = translations[currentLang].copyBtn;
+                    btn.style.background = "var(--accent-blue)";
+                }, 2000);
+            });
+        }
+
+        function sendFormData(e) {
+            e.preventDefault();
+            const form = document.getElementById('water-form');
+            const button = document.getElementById('submit-btn');
+            const successMessage = document.getElementById('form-success');
+            
+            const locInput = document.getElementById('input-location');
+            const landInput = document.getElementById('input-landmark');
+            
+            // Получаем очищенные от лишних пробелов значения полей
+            const locValue = locInput.value.trim();
+            const landValue = landInput.value.trim();
+            
+            let hasError = false;
+
+            // Сбрасываем предыдущие стили ошибок
+            locInput.classList.remove('input-error', 'shake-error');
+            landInput.classList.remove('input-error', 'shake-error');
+
+            // Валидация адреса (минимум 4 символа)
+            if (locValue.length < 4) {
+                locInput.classList.add('input-error', 'shake-error');
+                hasError = true;
+            }
+
+            // Валидация ориентира (минимум 4 символа)
+            if (landValue.length < 4) {
+                landInput.classList.add('input-error', 'shake-error');
+                hasError = true;
+            }
+
+            // Если есть ошибки — останавливаем отправку и выдаем сообщение
+            if (hasError) {
+                alert(translations[currentLang].validationError);
+                // Удаляем класс тряски через 400мс, чтобы его можно было стриггерить снова при повторном ошибочном клике
+                setTimeout(() => {
+                    locInput.classList.remove('shake-error');
+                    landInput.classList.remove('shake-error');
+                }, 400);
+                return;
+            }
+            
+            // Если всё ок — блокируем кнопку и отправляем данные
+            button.disabled = true;
+            button.innerText = translations[currentLang].sendingBtn;
+            
+            // Создаем чистый FormData с обрезкой пробелов
+            const cleanedFormData = new FormData();
+            cleanedFormData.append('_captcha', 'false');
+            cleanedFormData.append('_subject', document.getElementById('form-subject').value);
+            cleanedFormData.append('Location', locValue);
+            cleanedFormData.append('Landmark', landValue);
+            cleanedFormData.append('Water Status', document.getElementById('input-status').value);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: cleanedFormData,
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(response => {
+                if (response.ok) {
+                    form.reset();
+                    document.getElementById('form-subject').value = "New Pulpulak Status Update";
+                    updateStatusSelect();
+                    successMessage.innerText = translations[currentLang].successMsg;
+                    successMessage.style.display = 'block';
+                    button.innerText = translations[currentLang].submitBtn;
+                    button.disabled = false;
+                    setTimeout(() => successMessage.style.display = 'none', 5000);
+                } else {
+                    alert(translations[currentLang].errorMsg);
+                    button.innerText = translations[currentLang].submitBtn;
+                    button.disabled = false;
+                }
+            })
+            .catch(() => {
+                alert(translations[currentLang].networkError);
+                button.innerText = translations[currentLang].submitBtn;
+                button.disabled = false;
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setLanguage('ru');
+            generateQRCode();
+        });
+    </script>
+</body>
+</html>
