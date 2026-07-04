@@ -115,11 +115,13 @@
             width: 100%; 
             max-width: 480px; 
             margin-bottom: 25px; 
+            position: relative; /* Чтобы спозиционировать крестик очистки внутри */
         }
 
         #search { 
             width: 100%; 
             padding: 18px; 
+            padding-right: 50px; /* Оставляем место для кнопки сброса */
             border: 3px solid var(--main-dark); 
             border-radius: 16px; 
             font-size: 16px; 
@@ -133,6 +135,35 @@
         #search:focus { 
             transform: translate(-2px, -2px); 
             box-shadow: 6px 6px 0px var(--accent-blue); 
+        }
+
+        /* Кнопка очистки поиска */
+        .clear-search-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #EDF2F7;
+            border: 2px solid var(--main-dark);
+            color: var(--main-dark);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            display: none; /* Появляется только через JS */
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .clear-search-btn:hover {
+            background: #E2E8F0;
+        }
+
+        .clear-search-btn:active {
+            background: #CBD5E0;
         }
 
         .content-area {
@@ -386,6 +417,11 @@
             border-radius: 12px;
             cursor: pointer;
             transition: transform 0.2s;
+            /* УБИРАЕМ СИНЕЕ ВЫДЕЛЕНИЕ ПРИ КЛИКЕ И НАЖАТИИ */
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
 
         #qrcode:hover {
@@ -423,6 +459,7 @@
 
     <div class="search-wrapper">
         <input type="text" id="search" placeholder="Поиск по улице или ориентиру...">
+        <button class="clear-search-btn" id="clear-search" onclick="clearSearchField()">×</button>
     </div>
 
     <div class="content-area">
@@ -473,6 +510,7 @@
 
         const listContainer = document.getElementById('pulpulaks-list');
         const searchInput = document.getElementById('search');
+        const clearSearchBtn = document.getElementById('clear-search');
         const paginationBox = document.getElementById('pagination-box');
         const loadMoreBtn = document.getElementById('load-more-btn');
         const showAllBtn = document.getElementById('show-all-btn');
@@ -581,7 +619,7 @@
             { id: 1, locationRu: "Улица Казара Парпеци, 9Б", locationEn: "9B Ghazar Parpetsi St", locationAm: "Ղազար Փարպեցի փողոց, 9Բ", landmarkRu: "Питьевой фонтанчик на тротуаре", landmarkEn: "Drinking fountain on the sidewalk", landmarkAm: "Պուլպուլակ մայթին", status: "good", date: "2026-07-04" },
             { id: 2, locationRu: "Сквер хачкаров", locationEn: "Khachkar Park", locationAm: "Խաչքարերի պուրակ", landmarkRu: "Рядом с площадью Республики / метро", landmarkEn: "Near Republic Square / metro station", landmarkAm: "Հանրապետության հրապարակի / մետրոյի մոտ", status: "weak", date: "2026-07-04" },
             { id: 3, locationRu: "Улица Туманяна, 11/4", locationEn: "11/4 Tumanyan St", locationAm: "Թումանյան փողոց, 11/4", landmarkRu: "Недалеко от перекрестка с ул. Абовяна", landmarkEn: "Near the intersection with Abovyan St", landmarkAm: "Աբովյան փողոցի խաչմերուկի մոտ", status: "good", date: "2026-07-03" },
-            { id: 4, locationRu: "Улица Давид Бека, 1/4", locationEn: "1/4 David Bek St", locationAm: "Դավիթ Բեկի փողոց, 1/4", landmarkRu: "Вдоль проезжей части", landmarkEn: "Along the roadside", landmarkAm: "Ճանապարհի եզրին", status: "broken", date: "2026-06-30" },
+            { id: 4, locationRu: "Улица Давид Бека, 1/4", locationEn: "1/4 David Bek St", locationAm: "Դավիթ Բեկի փողոց, 1/4", landmarkRu: "Вдоль проезжей части", landmarkEn: "Along the roadside", landmarkAm: "Ճանապարհի եզрին", status: "broken", date: "2026-06-30" },
             { id: 5, locationRu: "Проспект Тигран Мец, 74", locationEn: "74 Tigran Mets Ave", locationAm: "Տիգրան Մեծի պողոտա, 74", landmarkRu: "Возле зданий по проспекту", landmarkEn: "Near the avenue buildings", landmarkAm: "Պողոտայի շենքերի մոտ", status: "weak", date: "2026-07-02" }
         ];
 
@@ -612,7 +650,6 @@
             landField.value = item.landmarkRu;
             subjectField.value = translations[currentLang].reportSubject + item.locationEn;
 
-            // Убираем ошибки валидации, если они были подсвечены до этого
             locField.classList.remove('input-error');
             landField.classList.remove('input-error');
 
@@ -651,11 +688,23 @@
             updateUI();
         }
 
+        function clearSearchField() {
+            searchInput.value = '';
+            visibleCardsCount = 3; // Сбрасываем пагинацию к дефолту
+            clearSearchBtn.style.display = 'none'; // Скрываем крестик
+            searchInput.focus();
+            updateUI();
+        }
+
         function updateUI() {
             const filteredData = getFilteredPulpulaks();
             const isSearching = searchInput && searchInput.value.toLowerCase().trim() !== '';
             
-            // Обновляем счетчик
+            // Показываем или скрываем крестик очистки в зависимости от текста
+            if (clearSearchBtn) {
+                clearSearchBtn.style.display = isSearching ? 'flex' : 'none';
+            }
+
             if (counterBox) {
                 counterBox.innerText = `${translations[currentLang].counterText}: ${pulpulaks.length}`;
             }
@@ -754,14 +803,21 @@
             });
         }
 
+        // БЕЗОПАСНОЕ СКАЧИВАНИЕ QR ЧЕРЕЗ BLOB (РАБОТАЕТ НА ВСЕХ УСТРОЙСТВАХ)
         function downloadQR() {
-            const img = document.querySelector('#qrcode img');
             const canvas = document.querySelector('#qrcode canvas');
-            const link = document.createElement('a');
-            link.download = 'yerevan-pulpulak-qr.png';
-            
-            if (img) { link.href = img.src; link.click(); }
-            else if (canvas) { link.href = canvas.toDataURL("image/png"); link.click(); }
+            if (!canvas) return;
+
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'yerevan-pulpulak-qr.png';
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url); // освобождаем память
+            }, 'image/png');
         }
 
         function copyLink() {
@@ -785,32 +841,26 @@
             const locInput = document.getElementById('input-location');
             const landInput = document.getElementById('input-landmark');
             
-            // Получаем очищенные от лишних пробелов значения полей
             const locValue = locInput.value.trim();
             const landValue = landInput.value.trim();
             
             let hasError = false;
 
-            // Сбрасываем предыдущие стили ошибок
             locInput.classList.remove('input-error', 'shake-error');
             landInput.classList.remove('input-error', 'shake-error');
 
-            // Валидация адреса (минимум 4 символа)
             if (locValue.length < 4) {
                 locInput.classList.add('input-error', 'shake-error');
                 hasError = true;
             }
 
-            // Валидация ориентира (минимум 4 символа)
             if (landValue.length < 4) {
                 landInput.classList.add('input-error', 'shake-error');
                 hasError = true;
             }
 
-            // Если есть ошибки — останавливаем отправку и выдаем сообщение
             if (hasError) {
                 alert(translations[currentLang].validationError);
-                // Удаляем класс тряски через 400мс, чтобы его можно было стриггерить снова при повторном ошибочном клике
                 setTimeout(() => {
                     locInput.classList.remove('shake-error');
                     landInput.classList.remove('shake-error');
@@ -818,11 +868,9 @@
                 return;
             }
             
-            // Если всё ок — блокируем кнопку и отправляем данные
             button.disabled = true;
             button.innerText = translations[currentLang].sendingBtn;
             
-            // Создаем чистый FormData с обрезкой пробелов
             const cleanedFormData = new FormData();
             cleanedFormData.append('_captcha', 'false');
             cleanedFormData.append('_subject', document.getElementById('form-subject').value);
