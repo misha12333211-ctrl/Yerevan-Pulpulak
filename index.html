@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yerevan Pulpulak Status 💧🇦🇲</title>
     
-    <!-- Шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
 
-    <!-- Библиотека для генерации QR-кода -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
@@ -110,6 +108,39 @@
             font-size: 14px; 
             color: #4A5568; 
             line-height: 1.5; 
+        }
+
+        /* Блок краудсорсинг инфо */
+        .crowd-info-box {
+            background: #E2EFE0; 
+            border: 3px solid var(--main-dark);
+            border-radius: 16px;
+            padding: 16px;
+            max-width: 480px;
+            width: 100%;
+            margin-bottom: 25px;
+            box-shadow: 4px 4px 0px var(--main-dark);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .crowd-info-icon {
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        .crowd-info-text {
+            font-size: 13px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .crowd-info-text strong {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 4px;
         }
 
         .search-wrapper { 
@@ -445,15 +476,62 @@
             transform: scale(1.03);
         }
 
-        .footer-box { 
-            margin: 40px 0; 
-            text-align: center; 
-            max-width: 480px; 
-            font-size: 13px; 
-            color: #718096; 
-            font-weight: 500; 
-            line-height: 1.5; 
-            white-space: pre-line;
+        /* Стилизованный блок футера */
+        .footer-wrapper {
+            margin: 40px 0 20px 0;
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .donation-card {
+            background: #FFFFFF;
+            border: 2px solid var(--main-dark);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 3px 3px 0px var(--main-dark);
+        }
+
+        .donation-text {
+            font-size: 13px;
+            color: var(--main-dark);
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .ton-btn {
+            background: #0098EA; 
+            color: white;
+            border: 2px solid var(--main-dark);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 2px 2px 0px var(--main-dark);
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+
+        .ton-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px var(--main-dark);
+        }
+
+        .privacy-text {
+            text-align: center;
+            font-size: 11px;
+            color: #718096;
+            font-weight: 500;
+            line-height: 1.4;
+            padding: 0 10px;
         }
     </style>
 </head>
@@ -470,9 +548,14 @@
     </div>
 
     <header>
-        <h1 id="main-title">Yerevan <span>Pulpulak</span> 💧</h1>
+        <h1 id="main-title">Yerevan <span>Pulpulak 💧</span></h1>
         <p class="subtitle" id="main-subtitle">Актуальный статус питьевых фонтанчиков Еревана. Проверено жителями города и туристами.</p>
     </header>
+
+    <div class="crowd-info-box">
+        <div class="crowd-info-icon">🚀</div>
+        <div class="crowd-info-text" id="crowd-text"></div>
+    </div>
 
     <div class="search-wrapper">
         <input type="text" id="search" placeholder="Поиск по улице или ориентиру...">
@@ -489,7 +572,6 @@
         <button class="collapse-btn" id="collapse-btn" onclick="collapseCards()">Свернуть обратно ⬆️</button>
     </div>
 
-    <!-- Форма отправки сообщений -->
     <div class="form-box" id="form-section">
         <h2 id="form-title">Заметили пулпулак?</h2>
         <p id="form-desc">Вода не течет или нашли новый фонтанчик? Напишите Вашему автору, и я обновлю статус на сайте.</p>
@@ -510,13 +592,11 @@
             </div>
             <button type="submit" class="submit-btn" id="submit-btn">Отправить статус автору</button>
             
-            <!-- Сюда будут красиво выводиться ошибки валидации -->
             <div id="form-error" style="display: none;"></div>
         </form>
         <div id="form-success" style="display: none; color: #2F855A; font-weight: bold; text-align: center; margin-top: 15px; font-size: 14px;"></div>
     </div>
 
-    <!-- Блок QR-кода -->
     <div class="qr-box">
         <h2 id="qr-title">Поделиться проектом</h2>
         <p id="qr-desc">Нажмите на QR-код, чтобы скачать его, или скопируйте ссылку кнопкой ниже.</p>
@@ -524,12 +604,19 @@
         <button class="copy-btn" id="copy-btn" onclick="copyLink()">Скопировать ссылку</button>
     </div>
 
-    <div class="footer-box" id="footer-text"></div>
+    <div class="footer-wrapper">
+        <div class="donation-card">
+            <div class="donation-text" id="donation-text">Проект создал и обновляет начинающий разработчик из Еревана. Если сайт спас Вашу прогулку, вы можете закинуть автору на мороженое через Tonkeeper! 🍦</div>
+            <button class="ton-btn" id="ton-copy-btn" onclick="copyTonAddress()">💎 Скопировать TON-кошелек</button>
+        </div>
+        <div class="privacy-text" id="privacy-text">Сайт не собирает личные данные пользователей. Отправляя данные формы, Вы не передаете личную информацию.</div>
+    </div>
 
     <script>
         let currentLang = 'ru';
         let visibleCardsCount = 3; 
         const cardsPerPage = 3;    
+        const tonAddress = "UQB4NY_1ula9p2YJpM0kHPEjbJOmOUK1JNwYUNu9_T2TlAbt";
 
         const listContainer = document.getElementById('pulpulaks-list');
         const searchInput = document.getElementById('search');
@@ -542,8 +629,9 @@
 
         const translations = {
             ru: {
-                title: "Yerevan <span>Pulpulak</span> 💧",
+                title: "Yerevan <span>Pulpulak 💧</span>",
                 subtitle: "Актуальный статус питьевых фонтанчиков Еревана. Проверено жителями города и туристами.",
+                crowdNotice: "<strong>Проект только запустился!</strong> Наш интерактивный список только начинает заполняться и обновляется исключительно силами заботливых жителей и гостей Еревана. Если вы знаете пулпулак, которого еще нет на сайте, или хотите изменить неактуальный статус — пожалуйста, добавьте его через форму внизу страницы. Давайте создадим базу фонтанчиков города вместе! Огромное спасибо за вашу поддержку! 🙌",
                 searchPlaceholder: "Поиск по улице или ориентиру...",
                 formTitle: "Заметили пулпулак?",
                 formDesc: "Вода не течет или нашли новый фонтанчик? Напишите Вашему автору, и я обновлю статус на сайте.",
@@ -563,11 +651,14 @@
                 showAllBtn: "Показать все ✨",
                 collapseBtn: "Свернуть обратно ⬆️",
                 counterText: "Всего",
-                footer: "Проект создал и обновляет начинающий разработчик из Еревана. Если сайт спас Вашу прогулку вы можете закинуть автору на мороженое через Tonkeeper UQB4NY_1ula9p2YJpM0kHPEjbJOmOUK1JNwYUNu9_T2TlAbt 🍦 \n\nСайт не собирает личные данные пользователей. Отправляя данные формы Вы не передаете личную информацию.",
+                donationText: "Проект создал и обновляет начинающий разработчик из Еревана. Если сайт спас Вашу прогулку, вы можете закинуть автору на мороженое через Tonkeeper! 🍦",
+                tonBtnText: "💎 Скопировать TON-кошелек",
+                tonCopiedText: "Адрес скопирован! ✅",
+                privacyText: "Сайт не собирает личные данные пользователей. Отправляя данные формы, Вы не передаете личную информацию.",
                 noResults: "Фонтанчиков по Вашему запросу не найдено 🔍",
-                today: "Проверено сегодня",
-                yesterday: "Проверено вчера",
-                updatedOn: "Проверено",
+                today: "Обновлено сегодня",
+                yesterday: "Обновлено вчера",
+                updatedOn: "Обновлено",
                 reportBtn: "Статус неверный? ⚠️",
                 good: "Вода идет отлично ❄️",
                 weak: "Слабый напор 💧",
@@ -575,8 +666,9 @@
                 reportSubject: "ОПРОВЕРЖЕНИЕ СТАТУСА: "
             },
             en: {
-                title: "Yerevan <span>Pulpulak</span> 💧",
+                title: "Yerevan <span>Pulpulak 💧</span>",
                 subtitle: "Current status of drinking fountains in Yerevan. Verified by city residents and tourists.",
+                crowdNotice: "<strong>The project has just launched!</strong> Our interactive list is in its very early stages and relies entirely on caring residents and visitors of Yerevan. If you know of a fountain that isn't listed on the site yet, or want to fix an outdated status, please share it using the form at the bottom of the page. Let's create a database of all the fountains together! Thank you so much for your support! 🙌",
                 searchPlaceholder: "Search by street or landmark...",
                 formTitle: "Spotted a pulpulak?",
                 formDesc: "Water not running or found a new fountain? Let Your author know, and I'll update the status on the site.",
@@ -596,11 +688,14 @@
                 showAllBtn: "Show all ✨",
                 collapseBtn: "Collapse list ⬆️",
                 counterText: "Total",
-                footer: "This project was created and is maintained by an aspiring developer from Yerevan. If the site saved your walk, feel free to treat the author to an ice cream via Tonkeeper: UQB4NY_1ula9p2YJpM0kHPEjbJOmOUK1JNwYUNu9_T2TlAbt 🍦 \n\nThe site does not collect users' personal data. Submitting the form does not involve sharing personal information.",
+                donationText: "This project was created and is maintained by an aspiring developer from Yerevan. If the site saved your walk, feel free to treat the author to an ice cream via Tonkeeper! 🍦",
+                tonBtnText: "💎 Copy TON Wallet",
+                tonCopiedText: "Address copied! ✅",
+                privacyText: "The site does not collect users' personal data. Submitting the form does not involve sharing personal information.",
                 noResults: "No fountains found for Your request 🔍",
-                today: "Verified today",
-                yesterday: "Verified yesterday",
-                updatedOn: "Verified on",
+                today: "Updated today",
+                yesterday: "Updated yesterday",
+                updatedOn: "Updated on",
                 reportBtn: "Wrong status? ⚠️",
                 good: "Water runs perfectly ❄️",
                 weak: "Weak stream 💧",
@@ -608,11 +703,12 @@
                 reportSubject: "STATUS REPORT: "
             },
             am: {
-                title: "Yerevan <span>Pulpulak</span> 💧",
+                title: "Yerevan <span>Pulpulak 💧</span>",
                 subtitle: "Երևանի պուլպուլակների արդիական կարգավիճակը։ Ստուգված է քաղաքի բնակիչների և զբոսաշրջիկների կողմից։",
+                crowdNotice: "<strong>Նախագիծը նոր է մեկնարկել:</strong> Մեր ինտերակտիվ ցուցակը դեռ նոր է սկսում լրացվել և թարմացվում է բացառապես Երևանի սրտացավ բնակիչների և հյուրերի ջանքերով: Եթե գիտեք պուլպուլակ, որը դեռ ներառված չէ կայքում, կամ ցանկանում եք փոխել հին կարգավիճակը, խնդրում ենք ավելացնել այն էջի ներքևի ձևանմուշի միջոցով: Եկեք միասին ստեղծենք քաղաքի պուլպուլակների բազան: Անչափ շնորհակալ ենք ձեր աջակցության համար: 🙌",
                 searchPlaceholder: "Փնտրել ըստ փողոցի կամ կողմնորոշիչի...",
                 formTitle: "Պուլպուլա՞կ եք նկատել:",
-                formDesc: "Ջուրը չի՞ հոսում, թե՞ նոր պուլպուլակ եք գտել: Գրեք Ձեր հեղինակին, և ես կթարմացնեմ կարգավիճակը կայքում:",
+                formDesc: "Ջուրը չի՞ հոսում, թե՞ նոր պուլպուլակ ենք գտել: Գրեք Ձեր հեղինակին, և ես կթարմացնեմ կարգավիճակը կայքում:",
                 inputLocation: "Փողոց / Հասցե",
                 inputLandmark: "Կողմնորոշիչ (օրինակ՝ մետրոյի մուտքի մոտ)",
                 submitBtn: "Ուղարկել կարգավիճակը հեղինակին",
@@ -629,11 +725,14 @@
                 showAllBtn: "Տեսնել բոլորը ✨",
                 collapseBtn: "Ծալել ետ ⬆️",
                 counterText: "Ընդամենը",
-                footer: "Այս նախագիծը ստեղծվել և սպասարկվում է Երևանից մի սկսնակ ծրագրավորողի կողմից։ Եթե կայքն օգտակար է եղել ձեր զբոսանքի ընթացքում, կարող եք հեղինակին պաղպաղակ հյուրասիրել Tonkeeper-ի միջոցով՝ UQB4NY_1ula9p2YJpM0kHPEjbJOmOUK1JNwYUNu9_T2TlAbt 🍦 ։ \nԿայքը չի հավաքում օգտատերերի անձնական տվյալները։ Ձևաթուղթը լրացնելը չի ​​ենթադրում անձնական տեղեկատվության փոխանցում։",
+                donationText: "Այս նախագիծը ստեղծվել և սպասարկվում է Երևանից մի սկսնակ ծրագրավորողի կողմից։ Եթե կայքն օգտակար է եղել ձեր զբոսանքի ընթացքում, կարող եք հեղինակին պաղպաղակ հյուրասիրել Tonkeeper-ի միջոցով: 🍦",
+                tonBtnText: "💎 Պատճենել TON քսակը",
+                tonCopiedText: "Հասցեն պատճենված է! ✅",
+                privacyText: "Կայքը չի հավաքում օգտատերերի անձնական տվյալները։ Ձևաթուղթը լրացնելը չի ​​ենթադրում անձնական տեղեկատվության փոխանցում։",
                 noResults: "Ձեր հարցմամբ պուլպուլակ չի գտնվել 🔍",
-                today: "Ստուգվել է այսօր",
-                yesterday: "Ստուգվել է երեկ",
-                updatedOn: "Ստուգվել է",
+                today: "Թարմացվել է այսօր",
+                yesterday: "Թարմացվել է երեկ",
+                updatedOn: "Թարմացվել է",
                 reportBtn: "Սխալ կարգավիճա՞կ է ⚠️",
                 good: "Ջուրը հիանալի հոսում է ❄️",
                 weak: "Թույլ ճնշում 💧",
@@ -704,7 +803,7 @@
             
             const day = String(updateDate.getDate()).padStart(2, '0');
             const month = String(updateDate.getMonth() + 1).padStart(2, '0');
-            return `${translations[lang].updatedOn}: ${day}.${month}.${updateDate.getFullYear()}`;
+            return `${translations[lang].updatedOn} ${day}.${month}.${updateDate.getFullYear()}`;
         }
 
         function loadMoreCards() {
@@ -800,13 +899,19 @@
 
             document.getElementById('main-title').innerHTML = translations[lang].title;
             document.getElementById('main-subtitle').innerText = translations[lang].subtitle;
+            document.getElementById('crowd-text').innerHTML = translations[lang].crowdNotice;
+            
             if (searchInput) searchInput.placeholder = translations[lang].searchPlaceholder;
             document.getElementById('form-title').innerText = translations[lang].formTitle;
             document.getElementById('form-desc').innerText = translations[lang].formDesc;
             document.getElementById('input-location').placeholder = translations[lang].inputLocation;
             document.getElementById('input-landmark').placeholder = translations[lang].inputLandmark;
             document.getElementById('submit-btn').innerText = translations[lang].submitBtn;
-            document.getElementById('footer-text').innerText = translations[lang].footer;
+            
+            document.getElementById('donation-text').innerText = translations[lang].donationText;
+            document.getElementById('ton-copy-btn').innerHTML = `💎 ${translations[lang].tonBtnText}`;
+            document.getElementById('privacy-text').innerText = translations[lang].privacyText;
+
             document.getElementById('qr-title').innerText = translations[lang].qrTitle;
             document.getElementById('qr-desc').innerText = translations[lang].qrDesc;
             document.getElementById('copy-btn').innerText = translations[lang].copyBtn;
@@ -814,7 +919,6 @@
             showAllBtn.innerText = translations[lang].showAllBtn;
             collapseBtn.innerText = translations[lang].collapseBtn;
 
-            // Если в блоке ошибки есть сообщение, обновляем его язык налету
             const errorContainer = document.getElementById('form-error');
             if (errorContainer.style.display === 'block') {
                 errorContainer.innerText = translations[lang].validationError;
@@ -822,6 +926,18 @@
 
             updateStatusSelect();
             updateUI();
+        }
+
+        function copyTonAddress() {
+            const btn = document.getElementById('ton-copy-btn');
+            navigator.clipboard.writeText(tonAddress).then(() => {
+                btn.innerHTML = `✅ ${translations[currentLang].tonCopiedText}`;
+                btn.style.background = "#48BB78";
+                setTimeout(() => {
+                    btn.innerHTML = `💎 ${translations[currentLang].tonBtnText}`;
+                    btn.style.background = "#0098EA";
+                }, 2000);
+            });
         }
 
         function getFilteredPulpulaks() {
@@ -913,7 +1029,6 @@
                 hasError = true;
             }
 
-            // ОШИБКА ТЕПЕРЬ ВЫВОДИТСЯ КРАСИВО ВНУТРИ ФОРМЫ (БЕЗ ALERT)
             if (hasError) {
                 errorContainer.innerText = translations[currentLang].validationError;
                 errorContainer.className = 'form-error-msg';
@@ -975,3 +1090,4 @@
     </script>
 </body>
 </html>
+
