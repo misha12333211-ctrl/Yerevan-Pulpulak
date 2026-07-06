@@ -2,7 +2,7 @@
 # [💧 Yerevan Pulpulak Status](https://yerevan-pulpulak.onrender.com/)
 
 
-[RU](#ru) | [EN](#en)
+[RU](#ru) | [EN](#en) 
 
 ---
 
