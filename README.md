@@ -63,9 +63,9 @@ Link: https://yerevan-pulpulak.onrender.com/
 
 ---
 
-## 📂 Other Projects / Другие проекты
+## 📂 Other Projects
 
-Check out my profile to see what else I'm working on!
+Check out my profile to see what else I'm working on: https://github.com/misha12333211-ctrl
 
 ---
 
