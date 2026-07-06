@@ -1,5 +1,6 @@
 
-# 💧 Yerevan Pulpulak Status
+# [💧 Yerevan Pulpulak Status](https://yerevan-pulpulak.onrender.com/)
+
 
 [RU](#ru) | [EN](#en)
 
@@ -23,6 +24,8 @@
 * **CSS3** (Neo-brutalism дизайн, CSS переменные, кастомная анимация)
 * **Vanilla JavaScript** (ES6+, динамический рендеринг, фильтрация, управление состоянием локализации)
 * **QRCode.js** (Клиентская генерация QR-кодов)
+
+Ссылка на сайт: https://yerevan-pulpulak.onrender.com/
   
 Заглядывайте в мой профиль, чтобы посмотреть другие мои работы:
 👉 https://github.com/misha12333211-ctrl
@@ -55,6 +58,8 @@ Built and maintained by aspiring developer based in Yerevan.
 * **CSS3** (Neo-brutalism styling, CSS variables, custom keyframe animations)
 * **Vanilla JavaScript** (ES6+, dynamic rendering, state management, search filtering)
 * **QRCode.js** (Client-side QR code generation)
+
+Link: https://yerevan-pulpulak.onrender.com/
 
 ---
 
